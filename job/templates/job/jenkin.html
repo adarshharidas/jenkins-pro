@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript">
+	// $("#jen-button").click(function(e){
+	// 	console.log("::::::::::::::::::")
+	// 	// $.ajax({
+	// 	//   type: "POST",
+	// 	//   url: "~/test.py",
+	// 	//   data: { param: "hello"}
+	// 	// }).done(function( o ) {
+	// 	//    // do something
+	// 	//    console.log("LLLLLLLLLLLLLLLLL")
+	// 	// });
+
+	// });
+
+	function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+	function doFunction(){
+		$.ajax({
+		  type: "post",
+		  url: "/job/run/",
+		  data: { jen: $("#jen").val()},
+		  beforeSend: function(xhr, settings){
+                           
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                       xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                   }
+          },
+		 // async: false,
+	     success: function(response) {
+		     // here you do whatever you want with the response variable	
+		     $("#result").text(response.text)
+		 },
+
+		 error: function(response){
+		 	console.log("|||||||||||||||", response)
+		 }
+
+		})
+		// $.get("/home/thinkpalm/jenkins/test.py", function(data){
+		// 	console.log("????????????")
+		// })
+	}
+
+
+	</script>
+</head>
+<body>
+	<!-- <form> -->
+		<table>
+			<tr>
+				<td><input type="text" name="jen" id="jen"></td> 
+				<td><button id="jen-button" onclick="doFunction();">Search</button></td>
+			</tr>
+			<tr>
+			 	<td><textarea rows="4" cols="50" id="result">
+				</textarea></td><td></td> 
+			</tr>
+		</table>
+	<!-- </form> -->
+
+
+</body> 
+</html>

@@ -6,19 +6,34 @@ from django.views.generic import View
 import os
 import sys
 import subprocess
-import test
+import bug_oracle
+from django.http import HttpResponse
+import json	
 
 # Create your views here.
 
 class RunScript(View):
 
-
+	template_name = 'job/jenkin.html'	
 	def get(self, request):
 
 		try:
-			print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-			# os.system("python test.py")
-			s2_out = subprocess.check_output([sys.executable, "test.py"])
-			print s2_out, ":::::::::::::::::::::"
+
+			return render(request, self.template_name, {})
+			
+		except Exception as e:
+			print e, "Exception"
+
+	def post(self, request):
+
+		try:
+			key = request.POST.get("jen")
+			tested = bug_oracle.bugOracle(key)
+			print tested, "{{{{{{{{{{{"
+			response = {
+				"text": tested
+			}
+			print response, "???????????????"
+			return HttpResponse(json.dumps(response), content_type="application/json")
 		except Exception as e:
 			print e, "Exception"

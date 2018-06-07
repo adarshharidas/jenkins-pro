@@ -19,5 +19,5 @@ from job import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^job/', include('job.urls'))
+    url(r'^', include('job.urls'))
 ]

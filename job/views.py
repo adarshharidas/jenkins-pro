@@ -14,7 +14,7 @@ import json
 
 class RunScript(View):
 
-	template_name = 'job/jenkin.html'	
+	template_name = 'job/jenkin1.html'	
 	def get(self, request):
 
 		try:
@@ -28,12 +28,14 @@ class RunScript(View):
 
 		try:
 			key = request.POST.get("jen")
-			tested = bug_oracle.bugOracle(key)
-			print tested, "{{{{{{{{{{{"
+			tested = bug_oracle.bugOracle(str(key))
 			response = {
-				"text": tested
+				"text": """{}""".format("\n".join(tested[0:])) if tested else "Invalid Jira ID"
 			}
-			print response, "???????????????"
-			return HttpResponse(json.dumps(response), content_type="application/json")
+			
 		except Exception as e:
 			print e, "Exception"
+			response = {
+				"text": "Invalid Jira ID"
+			}
+		return HttpResponse(json.dumps(response), content_type="application/json")

@@ -1,0 +1,94 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/ewn.css' %}"> 
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript">
+
+
+	
+	function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+	function doFunction(){
+		$.ajax({
+		  type: "post",
+		  url: "/job/run/",
+		  data: { jen: $("#jen").val()},
+		  beforeSend: function(xhr, settings){
+                           
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                       xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                   }
+          },
+		 
+	     success: function(response) {
+		     
+		     $("#result").text(response.text)
+		 },
+
+		 error: function(response){
+		 	console.log("ERROR", response)
+		 }
+
+		})
+		
+	}
+
+
+	</script>
+</head>
+<body>
+
+  <div class="header">
+    
+    <img src="{% static 'images/edge-water.png' %}">
+  </div>
+<div class="login-page">
+  <div class="form">   
+    <div class="login-form">{% csrf_token %}
+      <input type="text"  type="text" name="jen" id="jen" placeholder="Search"/><button  id="jen-button" onclick="doFunction();">Search</button>   
+      <textarea rows="4" cols="50" id="result"></textarea>
+         
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+
+

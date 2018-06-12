@@ -7,6 +7,7 @@
 	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<!-- jQuery library -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -43,27 +44,69 @@
     var csrftoken = getCookie('csrftoken');
 
 	function doFunction(){
-		$.ajax({
-		  type: "post",
-		  url: "/job/run/",
-		  data: { jen: $("#jen").val()},
-		  beforeSend: function(xhr, settings){
-                           
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                       xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                   }
+
+  
+    if( $("#jen").val().startsWith("EM-") ){
+
+        $("#result").text('');
+        $("#jen-button").addClass("buttonload"); 
+        $("#load").addClass("fa fa-spinner fa-spin");
+        $("#lab").text('Loading');
+        $("#lab").css('margin-left', '5px');
+
+        $.ajax({
+
+          type: "post",
+          url: "/job/run/",
+          data: { jen: $("#jen").val()},
+          beforeSend: function(xhr, settings){
+                               
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                   xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
           },
-		 
-	     success: function(response) {
-		     
-		     $("#result").text(response.text)
-		 },
+         
+          success: function(response) {
 
-		 error: function(response){
-		 	console.log("ERROR", response)
-		 }
+             $("#hyper").text("");
+             $("#result").text(response.text)
+             $("#jen-button").removeClass("buttonload"); 
+             $("#load").removeClass("fa fa-spinner fa-spin");
+             $("#lab").text('Search');
+             $("span").css("margin-left","initial");
+             $("#hyper").attr("href", "https://jira.edgewaternetworks.com/browse/"+$("#jen").val())
+             if (response.status != 1){
+                $("#hyper").text("");
+             }else{
+                $("#hyper").text("Click here for " + $("#jen").val() )
+             }
+             
 
-		})
+          },
+
+          error: function(response){
+
+            console.log("ERROR", response)
+            $("#jen-button").removeClass("buttonload"); 
+            $("#load").removeClass("fa fa-spinner fa-spin");
+            $("#lab").text('Search');
+            $("span").css("margin-left","initial");
+          }
+
+        })
+
+    } else{
+      if ( $("#jen").val() == ""){
+
+        $("#result").text('Please enter a Jira ID');
+      }else{
+
+        $("#result").text('No such Jira ID');
+      }
+      
+    }
+
+		
 		
 	}
 
@@ -79,9 +122,17 @@
 <div class="login-page">
   <div class="form">   
     <div class="login-form">{% csrf_token %}
-      <input type="text"  type="text" name="jen" id="jen" placeholder="Search"/><button  id="jen-button" onclick="doFunction();">Search</button>   
+      <!-- <input type="text"  type="text" name="jen" id="jen" placeholder="Search"/><button  id="jen-button" onclick="doFunction();">Search</button>  
+       -->
+      <input type="text" name="jen" id="jen" placeholder="Search"/> 
+      <button id="jen-button" onclick="doFunction();" >{% csrf_token %}
+        <i id="load"></i><span id="lab">Search</span>
+        <!-- <i class="fa fa-spinner fa-spin"></i>Loading -->
+      </button> 
+
+
       <textarea rows="4" cols="50" id="result"></textarea>
-         
+      <a href="" id="hyper" class="hyperclass"></a>
     </div>
   </div>
 </div>

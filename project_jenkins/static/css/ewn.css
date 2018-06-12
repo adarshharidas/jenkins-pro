@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 body{
-    background: #add9e6;
+    background: #3e80c2;
     margin: 0;
 }
 
@@ -75,4 +75,16 @@ body{
 }
 .form button:hover,.form button:active,.form button:focus {
   background: #305fae;
+}
+
+.buttonload {
+    background-color: #4CAF50; /* Green background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 12px 16px; /* Some padding */
+    font-size: 16px /* Set a font size */
+}
+
+.hyperclass{
+  float: left;
 }

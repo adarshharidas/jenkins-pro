@@ -29,13 +29,16 @@ class RunScript(View):
 		try:
 			key = request.POST.get("jen")
 			tested = bug_oracle.bugOracle(str(key))
+			
 			response = {
-				"text": """{}""".format("\n".join(tested[0:])) if tested else "Invalid Jira ID"
+				"text": """{}""".format("\n".join(tested[0:])) if tested else "No commits",
+				"status": 1 if tested else 0
 			}
 			
 		except Exception as e:
 			print e, "Exception"
 			response = {
-				"text": "Invalid Jira ID"
+				"text": "No commits",
+				"status": 0
 			}
 		return HttpResponse(json.dumps(response), content_type="application/json")
